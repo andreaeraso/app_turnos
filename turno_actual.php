@@ -8,29 +8,31 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center">Turno Actual</h1>
-        <div class="mt-4">
-            <ul class="list-group">
-                <?php
-                include 'db.php';
+        <div class="row mt-4">
+            <?php
+            include 'db.php'; // Incluye el archivo de conexión a la base de datos
 
-                $servicios = ['caja', 'tramites', 'informacion'];
-                foreach ($servicios as $servicio) {
-                    echo "<h2>" . ucfirst($servicio) . "</h2>";
+            // Array de servicios disponibles
+            $servicios = ['caja', 'tramites', 'informacion'];
+            foreach ($servicios as $servicio) {
+                echo "<div class='col-md-4'>";
+                echo "<h2 class='text-center'>" . ucfirst($servicio) . "</h2>"; // Muestra el nombre del servicio en un título
 
-                    $sql = "SELECT turno FROM clientes WHERE servicio='$servicio' AND atendido=FALSE ORDER BY id ASC LIMIT 1";
-                    $result = $conn->query($sql);
+                // Consulta para obtener el primer turno pendiente del servicio actual
+                $sql = "SELECT turno FROM clientes WHERE servicio='$servicio' AND atendido=FALSE ORDER BY id ASC LIMIT 1";
+                $result = $conn->query($sql);
 
-                    if ($result->num_rows > 0) {
-                        $row = $result->fetch_assoc();
-                        echo "<li class='list-group-item'>Turno actual: {$row['turno']}</li>";
-                    } else {
-                        echo "<li class='list-group-item'>No hay turnos pendientes</li>";
-                    }
+                if ($result->num_rows > 0) { // Si hay turnos pendientes
+                    $row = $result->fetch_assoc();
+                    echo "<li class='list-group-item'>Turno actual: {$row['turno']}</li>"; // Muestra el turno actual
+                } else {
+                    echo "<li class='list-group-item'>No hay turnos pendientes</li>"; // Muestra un mensaje si no hay turnos pendientes
                 }
+                echo "</div>";
+            }
 
-                $conn->close();
-                ?>
-            </ul>
+            $conn->close(); // Cierra la conexión a la base de datos
+            ?>
         </div>
     </div>
 </body>
